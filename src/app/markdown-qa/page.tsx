@@ -251,7 +251,7 @@ export default function YakAIPage() {
         } else if (event.startsWith("event: error")) {
           setMessages((msgs) => [
             ...msgs.slice(0, -1),
-            { role: "assistant", content: "服务不可用" },
+            { role: "assistant", content: "服务不可用sbs" },
           ]);
           setLoading(false);
         }

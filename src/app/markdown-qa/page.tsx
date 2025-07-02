@@ -110,9 +110,9 @@ export default function ChatPage() {
       <div className="w-full flex flex-col items-center mt-12 mb-6 select-none">
         <h1
           className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent drop-shadow-lg tracking-wide"
-          style={{ letterSpacing: "0.1em" }}
+          style={{ letterSpacing: "0.3em" }}
         >
-          Yakབོད་སྐད་དྲིས་ལནAI
+          Yakབོད་སྐད་དྲིས་ལན་AI
         </h1>
         {/* 可选：副标题 */}
         {/* <div className="mt-2 text-lg text-gray-500 font-medium">

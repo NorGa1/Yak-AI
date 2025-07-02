@@ -1,18 +1,18 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
-import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import React, { useState, useRef, useEffect } from "react"; // 导入 React 库
+import ReactMarkdown from "react-markdown"; // 导入 react-markdown 库
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"; // 导入 react-syntax-highlighter 库
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism"; // 导入 vscDarkPlus 样式
 
 type Message = {
   role: "user" | "assistant";
   content: string;
-  streaming?: boolean; // 标记是否为流式消息
+  streaming?: boolean; // 标记是否为流式消息  
 };
 
 export default function ChatPage() {
-  const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState(""); // 输入框状态
+  const [messages, setMessages] = useState<Message[]>([]); // 消息状态
   // const [messages, setMessages] = useState<Message[]>([
   //   {
   //     role: "assistant",

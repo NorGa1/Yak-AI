@@ -343,53 +343,58 @@ export default function YakAIPage() {
               </form>
             </div>
           ) : (
-            <div className="flex-1 flex flex-col w-full h-full px-0 py-6 space-y-4 overflow-y-auto">
-              {messages.map((msg, idx) => (
-                <div key={idx} className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                  <div className={`flex items-end gap-2 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
-                    <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center text-white text-lg font-bold select-none">
-                      {msg.role === "user" ? <span>U</span> : <span>🤖</span>}
-                    </div>
-                    <div className={`max-w-[90vw] sm:max-w-[80vw] md:max-w-[60vw] px-4 py-3 rounded-2xl text-base whitespace-pre-wrap break-words shadow border ${msg.role === "user" ? "bg-zinc-700 text-white/90 border-zinc-600" : "bg-zinc-600 text-white border-zinc-500"}`}>
-                      {msg.content}
+            <div className="flex-1 flex flex-col w-full h-full px-0 py-6 overflow-y-auto">
+              <div className="w-full max-w-2xl mx-auto space-y-4">
+                {messages.map((msg, idx) => (
+                  <div key={idx} className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                    <div className={`flex items-end gap-2 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
+                      <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center text-white text-lg font-bold select-none">
+                        {msg.role === "user" ? <span>U</span> : <span>🤖</span>}
+                      </div>
+                      <div className={`max-w-[90vw] sm:max-w-[80vw] md:max-w-[60vw] px-4 py-3 rounded-2xl text-base whitespace-pre-wrap break-words shadow border ${msg.role === "user" ? "bg-zinc-700 text-white/90 border-zinc-600" : "bg-zinc-600 text-white border-zinc-500"}`}>
+                        {msg.content}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-              <div ref={messagesEndRef} />
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
             </div>
           )}
         </div>
         {/* 输入区吸底，全宽 */}
         {messages.length > 0 && (
-          <form
-            onSubmit={handleSend}
-            className="sticky bottom-0 left-0 w-full bg-zinc-800 border-t border-zinc-700 flex items-end gap-2 px-4 py-4 flex-shrink-0"
-            style={{ zIndex: 10 }}
-          >
-            <div className="flex items-center gap-2">
-              <button type="button" className="p-2 rounded-lg bg-zinc-700 text-white/70 hover:bg-zinc-600 transition" title="Tools"><span>🛠️</span></button>
-            </div>
-            <textarea
-              ref={textareaRef}
-              className="flex-1 min-h-[48px] max-h-40 bg-zinc-700 rounded-xl px-4 py-3 text-white/90 placeholder-white/40 border border-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-base shadow"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask anything"
-              onKeyDown={handleKeyDown}
-              rows={1}
-              maxLength={2000}
-              autoFocus
-            />
-            <button
-              type="submit"
-              className="p-3 rounded-full bg-zinc-600 hover:bg-zinc-500 text-white transition disabled:opacity-50"
-              disabled={!input.trim()}
-              title="发送"
+          <div className="w-full pb-6 pt-2 bg-zinc-800">
+            <form
+              onSubmit={handleSend}
+              className="max-w-2xl mx-auto w-full flex items-end gap-2 px-4"
+              style={{ boxShadow: 'none' }}
             >
-              <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-send"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
-            </button>
-          </form>
+              <div className="flex items-center gap-2">
+                <button type="button" className="p-2 rounded-lg bg-zinc-700 text-white/70 hover:bg-zinc-600 transition" title="Tools"><span>🛠️</span></button>
+              </div>
+              <textarea
+                ref={textareaRef}
+                className="flex-1 min-h-[48px] max-h-40 bg-zinc-700 rounded-xl px-4 py-3 text-white/90 placeholder-white/40 border border-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-base shadow"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask anything"
+                onKeyDown={handleKeyDown}
+                rows={1}
+                maxLength={2000}
+                autoFocus
+                style={{overflow: 'auto'}}
+              />
+              <button
+                type="submit"
+                className="p-3 rounded-full bg-zinc-600 hover:bg-zinc-500 text-white transition disabled:opacity-50"
+                disabled={!input.trim()}
+                title="发送"
+              >
+                <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-send"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
+              </button>
+            </form>
+          </div>
         )}
       </main>
     </div>

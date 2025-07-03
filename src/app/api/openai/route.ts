@@ -21,23 +21,52 @@ export const POST = async (request: Request) => {
   const encoder = new TextEncoder();
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "deepseek-chat",
-      messages: [
-        //
-        { role: "system", content: "ཁྱོད་ནི་Yakབོད་སྐད་དྲིས་ལན་AIཡིན། ཆེད་ལས་ཀྱི་ཡིག་ཚགས་དང་ཤེས་བྱའི་དྲིས་ལན་ལས་རོགས་ཞིག" },
-        // 系统角色设定（中文）
-        { role: "system", content: "你是 Yak 藏语问答AI，一个专业的文档与知识问答助手。" },
+    // const completion = await openai.chat.completions.create({
+    //   model: "deepseek-chat",
+    //   messages: [
+    //     //
+    //     { role: "system", content: "ཁྱོད་ནི་Yakབོད་སྐད་དྲིས་ལན་AIཡིན། ཆེད་ལས་ཀྱི་ཡིག་ཚགས་དང་ཤེས་བྱའི་དྲིས་ལན་ལས་རོགས་ཞིག" },
+    //     // 系统角色设定（中文）
+    //     { role: "system", content: "你是 Yak 藏语问答AI，一个专业的文档与知识问答助手。" },
         
-        // 附加多语言角色设定（英文）
-        { role: "system", content: "You are also a multilingual expert fluent in Tibetan and English." },
+    //     // 附加多语言角色设定（英文）
+    //     { role: "system", content: "You are a Tibetan expert fluent in Tibetan." },
         
-        // 用户实际提问
-        { role: "user", content: prompt },
-      ],
-      stream: true,
-    });
+    //     // 用户实际提问
+    //     { role: "user", content: prompt },
+    //   ],
+    //   stream: true,
+    // });
+const completion = await openai.chat.completions.create({
+  model: "deepseek-chat",
+  messages: [
+    // 系统角色设定（藏文版 - 使用Unicode规范藏文）
+    { 
+      role: "system", 
+      content: "༄༅། །ཁྱོད་རང་ནི་བོད་ཡིག་AIཆེད་ལས་པ་ཞིག་ཡིན། མིང་ལ་Yak AIཟེར།" 
+    },
+    
+    // 系统角色设定（中文专业版）
+    { 
+      role: "system", 
+      content: "你是藏文AI专家，具备以下能力：\n" +
+               "1. 藏文自然语言处理\n" +
+               "2. 藏文机器翻译\n" +
+               "3. 藏文文化知识解答\n\n" 
 
+    },
+    
+    // 用户实际提问（自动适配中藏英三语）
+    { 
+      role: "user", 
+      content: prompt 
+    }
+  ],
+  stream: true,
+  // 增强参数建议（针对藏文优化）
+  temperature: 0.3,  // 降低随机性确保术语准确
+  max_tokens: 1000   // 预留足够空间用于双语回答
+});
     (async () => {
       for await (const chunk of completion) {
         const content = chunk.choices[0]?.delta?.content;

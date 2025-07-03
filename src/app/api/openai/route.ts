@@ -43,7 +43,7 @@ const completion = await openai.chat.completions.create({
     // 系统角色设定（藏文版 - 使用Unicode规范藏文）
     { 
       role: "system", 
-      content: "༄༅། །ཁྱོད་རང་ནི་བོད་ཡིག་AIཆེད་ལས་པ་ཞིག་ཡིན། མིང་ལ་Yak AIཟེར།" 
+      content: "༄༅།། ཁྱོད་རང་ནི་བོད་ཡིག་གི་སྐད་དབྱིབས་ཆེན་པོ་ཞིག་ཡིན། མིང་ལ་Yak AIཟེར།" 
     },
     
     // 系统角色设定（中文专业版）

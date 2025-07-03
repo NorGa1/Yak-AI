@@ -5,6 +5,13 @@
 body {
   @apply text-white;
   @apply bg-gray-950;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+html {
+  overflow: hidden;
 }
 
 @layer utilities {
@@ -32,8 +39,4 @@ pre {
 
 .markdown {
   @apply prose prose-invert;
-}
-
-body > div {
-  @apply m-8 mx-auto max-w-screen-md rounded-lg bg-black p-8 pt-1;
 }

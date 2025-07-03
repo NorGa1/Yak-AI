@@ -271,7 +271,7 @@ export default function YakAIPage() {
   const toggleSidebar = () => setSidebarOpen((v) => !v);
 
   return (
-    <div className="flex h-screen w-screen bg-zinc-900 overflow-hidden">
+    <div className="flex h-full w-full bg-zinc-900 overflow-hidden">
       {/* Sidebar */}
       <aside className={`fixed z-30 top-0 left-0 h-full w-64 bg-zinc-900 border-r border-zinc-800 flex flex-col transition-transform duration-300 md:static md:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:block`}>
         <div className="flex flex-col gap-6 px-6 pt-8 pb-4">
@@ -304,13 +304,13 @@ export default function YakAIPage() {
         </div>
       </aside>
       {/* 移动端侧边栏按钮 */}
-      <button className="fixed top-4 left-4 z-40 md:hidden bg-zinc-800 text-white p-2 rounded-full shadow-lg" onClick={toggleSidebar}>
+      <button className="fixed top-4 left-4 z-40 md:hidden bg-zinc-800 text-white p-2 rounded-full shadow-lg border border-zinc-700" onClick={toggleSidebar}>
         <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
       </button>
       {/* Main Chat Area */}
-      <main className="flex-1 flex flex-col h-full bg-zinc-800 min-w-0 relative overflow-x-hidden w-full overflow-y-auto">
+      <main className="flex-1 flex flex-col h-full bg-zinc-800 min-w-0 relative overflow-hidden">
         {/* 消息流或欢迎语 */}
-        <div className="flex-1 flex flex-col w-full h-0">
+        <div className="flex-1 flex flex-col w-full h-0 overflow-y-auto">
           {messages.length === 0 ? (
             <div className="flex flex-1 flex-col items-center justify-center w-full h-full">
               <h1 className="text-3xl font-bold text-white mb-6 select-none">What's on the agenda today?</h1>
@@ -343,7 +343,7 @@ export default function YakAIPage() {
               </form>
             </div>
           ) : (
-            <div className="flex-1 flex flex-col w-full h-full px-0 py-6 space-y-4">
+            <div className="flex-1 flex flex-col w-full h-full px-0 py-6 space-y-4 overflow-y-auto">
               {messages.map((msg, idx) => (
                 <div key={idx} className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div className={`flex items-end gap-2 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
@@ -364,7 +364,7 @@ export default function YakAIPage() {
         {messages.length > 0 && (
           <form
             onSubmit={handleSend}
-            className="sticky bottom-0 left-0 w-full bg-zinc-800 border-t border-zinc-700 flex items-end gap-2 px-4 py-4"
+            className="sticky bottom-0 left-0 w-full bg-zinc-800 border-t border-zinc-700 flex items-end gap-2 px-4 py-4 flex-shrink-0"
             style={{ zIndex: 10 }}
           >
             <div className="flex items-center gap-2">

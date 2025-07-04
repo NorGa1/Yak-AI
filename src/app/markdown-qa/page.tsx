@@ -15,7 +15,7 @@ type Message = {
 function YakAILogo() {
   return (
     <div className="flex items-center gap-2">
-      <span className="inline-block w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center font-bold text-lg text-white select-none">Y</span>
+      <span className="inline-block w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center font-bold text-lg text-white select-none">བོད</span>
       <span className="text-2xl font-extrabold tracking-widest text-white select-none">YAKAI</span>
     </div>
   );
@@ -114,54 +114,55 @@ function ChatArea({ messages, messagesEndRef }: { messages: Message[]; messagesE
   );
 }
 
-// 输入区组件
-function InputBox({
-  input,
-  setInput,
-  onSend,
-  loading,
-  isFirstInput,
+// 输入区表单结构（底部和欢迎页都统一）
+function ChatInput({
+  input, setInput, onSend, loading, textareaRef, handleKeyDown, placeholder = "Ask anything"
 }: {
   input: string;
   setInput: (v: string) => void;
   onSend: (e: React.FormEvent) => void;
   loading: boolean;
-  isFirstInput: boolean;
+  textareaRef: React.RefObject<HTMLTextAreaElement>;
+  handleKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+  placeholder?: string;
 }) {
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  // 自动高度
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 160) + "px";
-    }
-  }, [input]);
   return (
     <form
       onSubmit={onSend}
-      className={`fixed left-0 w-full md:w-[calc(100%-16rem)] transition-all duration-300 z-20 ${
-        isFirstInput ? "top-1/2 -translate-y-1/2 md:left-64 md:top-1/2" : "bottom-0 md:left-64"
-      } flex items-end px-2 md:px-8 py-4 bg-white border-t md:border md:rounded-t-lg shadow-lg`}
-      style={{ maxWidth: "100vw" }}
+      className="max-w-2xl mx-auto w-full flex items-center gap-2 px-4 relative"
+      style={{ boxShadow: 'none' }}
     >
+      {/* 工具按钮内嵌左侧 */}
+      <span className="absolute left-6 bottom-2 z-10">
+        <button type="button" className="p-1 rounded bg-zinc-700 text-white/70 hover:bg-zinc-600 transition text-sm" title="Tools" style={{width:28, height:28}}>
+          <span role="img" aria-label="tools">🛠️</span>
+        </button>
+      </span>
       <textarea
         ref={textareaRef}
-        className="flex-1 border rounded-lg px-3 py-2 mr-2 focus:outline-none bg-gray-100 text-gray-900 focus:ring-2 focus:ring-blue-500 resize-none transition-all duration-200 min-h-[40px] max-h-40"
+        className="flex-1 min-h-[84px] max-h-40 bg-zinc-700 rounded-xl pl-4 pr-10 py-2 text-white/90 placeholder-white/40 border border-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-base shadow"
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="请输入你的问题..."
-        disabled={loading}
+        placeholder={placeholder}
+        onKeyDown={handleKeyDown}
         rows={1}
         maxLength={2000}
         autoFocus
+        style={{overflow: 'auto'}}
+        disabled={loading}
       />
-      <button
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center disabled:opacity-50 transition-all duration-200"
-        type="submit"
-        disabled={loading || !input.trim()}
-      >
-        <FiSend className="mr-1" /> 发送
-      </button>
+      {/* 发送按钮内嵌右侧 */}
+      <span className="absolute right-6 bottom-2 z-10">
+        <button
+          type="submit"
+          className="p-1 rounded-full bg-zinc-600 hover:bg-zinc-500 text-white transition disabled:opacity-50 text-sm flex items-center justify-center"
+          style={{width:20, height:20}}
+          disabled={loading || !input.trim()}
+          title="发送"
+        >
+          <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-send"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
+        </button>
+      </span>
     </form>
   );
 }
@@ -294,7 +295,7 @@ export default function YakAIPage() {
             ))}
           </div>
         </div>
-        <div className="mt-auto px-4 pb-6">
+        <div className="absolute bottom-0 left-0 w-full px-4 pb-6 bg-zinc-900">
           <button className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-zinc-300 hover:bg-zinc-800 transition text-base">
             <span>⚙️</span> 设置
           </button>
@@ -314,33 +315,15 @@ export default function YakAIPage() {
           {messages.length === 0 ? (
             <div className="flex flex-1 flex-col items-center justify-center w-full h-full">
               <h1 className="text-3xl font-bold text-white mb-6 select-none">What's on the agenda today?</h1>
-              <form
-                onSubmit={handleSend}
-                className="w-full max-w-xl flex items-end gap-2 mt-8 px-4"
-              >
-                <div className="flex items-center gap-2">
-                  <button type="button" className="p-2 rounded-lg bg-zinc-700 text-white/70 hover:bg-zinc-600 transition" title="Tools"><span>🛠️</span></button>
-                </div>
-                <textarea
-                  ref={textareaRef}
-                  className="flex-1 min-h-[48px] max-h-40 bg-zinc-700 rounded-xl px-4 py-3 text-white/90 placeholder-white/40 border border-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-base shadow"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask anything"
-                  onKeyDown={handleKeyDown}
-                  rows={1}
-                  maxLength={2000}
-                  autoFocus
-                />
-                <button
-                  type="submit"
-                  className="p-3 rounded-full bg-zinc-600 hover:bg-zinc-500 text-white transition disabled:opacity-50"
-                  disabled={!input.trim()}
-                  title="发送"
-                >
-                  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-send"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
-                </button>
-              </form>
+              <ChatInput
+                input={input}
+                setInput={setInput}
+                onSend={handleSend}
+                loading={loading}
+                textareaRef={textareaRef}
+                handleKeyDown={handleKeyDown}
+                placeholder="Ask anything"
+              />
             </div>
           ) : (
             <div className="flex-1 flex flex-col w-full h-full px-0 py-6 overflow-y-auto">
@@ -364,37 +347,19 @@ export default function YakAIPage() {
         </div>
         {/* 输入区吸底，全宽 */}
         {messages.length > 0 && (
-          <div className="w-full pb-6 pt-2 bg-zinc-800">
-            <form
-              onSubmit={handleSend}
-              className="max-w-2xl mx-auto w-full flex items-end gap-2 px-4"
-              style={{ boxShadow: 'none' }}
-            >
-              <div className="flex items-center gap-2">
-                <button type="button" className="p-2 rounded-lg bg-zinc-700 text-white/70 hover:bg-zinc-600 transition" title="Tools"><span>🛠️</span></button>
-              </div>
-              <textarea
-                ref={textareaRef}
-                className="flex-1 min-h-[48px] max-h-40 bg-zinc-700 rounded-xl px-4 py-3 text-white/90 placeholder-white/40 border border-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-base shadow"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask anything"
-                onKeyDown={handleKeyDown}
-                rows={1}
-                maxLength={2000}
-                autoFocus
-                style={{overflow: 'auto'}}
-              />
-              <button
-                type="submit"
-                className="p-3 rounded-full bg-zinc-600 hover:bg-zinc-500 text-white transition disabled:opacity-50"
-                disabled={!input.trim()}
-                title="发送"
-              >
-                <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-send"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
-              </button>
-            </form>
-          </div>
+          <>
+            <ChatInput
+              input={input}
+              setInput={setInput}
+              onSend={handleSend}
+              loading={loading}
+              textareaRef={textareaRef}
+              handleKeyDown={handleKeyDown}
+            />
+            <div className="w-full flex justify-center pb-4 pt-2">
+              <span className="text-xs text-gray-400 select-none">YAK Ai can make mistakes. Check important info.</span>
+            </div>
+          </>
         )}
       </main>
     </div>

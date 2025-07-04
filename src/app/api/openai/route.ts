@@ -95,3 +95,103 @@ const completion = await openai.chat.completions.create({
     },
   });
 };
+
+
+
+// import { NEWLINE } from "../../constants";
+
+// const apiKey = process.env.GEMINI_API_KEY;
+// if (!apiKey) {
+//   throw new Error("GEMINI_API_KEY 环境变量未设置");
+// }
+
+// export const dynamic = "force-dynamic";
+
+// export const POST = async (request: Request) => {
+//   const { prompt } = await request.json();
+//   const responseStream = new TransformStream();
+//   const writer = responseStream.writable.getWriter();
+//   const encoder = new TextEncoder();
+
+//   try {
+//     // ✅ 拼接所有系统提示 + 用户问题作为 Gemini 输入内容
+//     const combinedPrompt = [
+//       "༄༅། །ཁྱོད་རང་ནི་བོད་ཡིག་AIཆེད་ལས་པ་ཞིག་ཡིན། མིང་ལ་Yak AIཟེར།",
+//       "你是藏文AI专家，具备以下能力：",
+//       "1. 藏文自然语言处理",
+//       "2. 藏文机器翻译",
+//       "3. 藏文文化知识解答",
+//       "",
+//       prompt
+//     ].join("\n");
+
+//     // ✅ 调用 Gemini API 流式接口
+//     const res = await fetch(
+//       `https://generativelanguage.googleapis.com/v1/models/gemini-pro:streamGenerateContent?key=${apiKey}`,
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({
+//           contents: [
+//             {
+//               role: "user",
+//               parts: [{ text: combinedPrompt }],
+//             },
+//           ],
+//           generationConfig: {
+//             temperature: 0.3,
+//             maxOutputTokens: 1000,
+//           },
+//         }),
+//       }
+//     );
+
+//     if (!res.body) throw new Error("没有响应流");
+
+//     const reader = res.body.getReader();
+//     const decoder = new TextDecoder("utf-8");
+//     let partial = "";
+
+//     while (true) {
+//       const { done, value } = await reader.read();
+//       if (done) break;
+
+//       partial += decoder.decode(value, { stream: true });
+//       const lines = partial.split("\n").filter((line) => line.trim() !== "");
+//       partial = lines.pop() ?? "";
+
+//       for (const line of lines) {
+//         if (line.startsWith("data: ")) {
+//           const json = JSON.parse(line.replace(/^data: /, ""));
+//           const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
+//           if (text) {
+//             const safeContent = text.replace(/\n/g, NEWLINE);
+//             await writer.write(
+//               encoder.encode(`event: token\ndata: ${safeContent}\n\n`)
+//             );
+//           }
+//         }
+//       }
+//     }
+
+//     await writer.write(encoder.encode(`event: finished\ndata: true\n\n`));
+//     await writer.close();
+//   } catch (error) {
+//     await writer.write(
+//       encoder.encode(
+//         `event: error\ndata: ${JSON.stringify({ message: "服务不可用" })}\n\n`
+//       )
+//     );
+//     await writer.close();
+//   }
+
+//   return new Response(responseStream.readable, {
+//     headers: {
+//       "Content-Type": "text/event-stream",
+//       "Cache-Control": "no-cache, no-transform",
+//       "Connection": "keep-alive",
+//     },
+//   });
+// };

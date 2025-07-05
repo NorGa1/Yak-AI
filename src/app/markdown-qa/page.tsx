@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react"; // 导入 React 库
 import ReactMarkdown from "react-markdown"; // 导入 react-markdown 库
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"; // 导入 react-syntax-highlighter 库
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism"; // 导入 vscDarkPlus 样式
-import { FiSend, FiMenu } from "react-icons/fi";
+import { FiSend, FiMenu, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 type Message = {
   role: "user" | "assistant";
@@ -22,7 +22,7 @@ function YakAILogo() {
 }
 
 const MENU = [
-  { label: "New chat", icon: "📝" },
+  { label: "New chat", icon: "➕" },
   { label: "Search chats", icon: "🔍" },
   { label: "Library", icon: "📚" },
 ];
@@ -34,89 +34,92 @@ const SESSIONS = [
 ];
 
 // 侧边栏组件
-function Sidebar({ onNewChat, currentId, onSelect, show, onClose }: {
+function Sidebar({ onNewChat, currentId, onSelect, show, onClose, collapsed, onToggleCollapse }: {
   onNewChat: () => void;
   currentId: number;
   onSelect: (id: number) => void;
   show: boolean;
   onClose: () => void;
+  collapsed: boolean;
+  onToggleCollapse: () => void;
 }) {
   return (
-    <aside className={`fixed top-14 left-0 h-[calc(100vh-3.5rem)] w-64 bg-gray-900 text-gray-100 flex flex-col z-30 transition-transform duration-300 md:translate-x-0 ${show ? "translate-x-0" : "-translate-x-full"} md:static md:block`}>
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-700">
-        <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-semibold" onClick={onNewChat}>新建聊天</button>
-        <button className="md:hidden text-gray-400 hover:text-white" onClick={onClose}><FiMenu size={22} /></button>
-      </div>
-      <div className="flex-1 overflow-y-auto">
-        {SESSIONS.map((s) => (
-          <div
-            key={s.id}
-            className={`px-4 py-3 cursor-pointer hover:bg-gray-800 ${currentId === s.id ? "bg-gray-800 font-bold" : ""}`}
-            onClick={() => onSelect(s.id)}
-          >
-            {s.name}
+    <aside className={`fixed z-30 top-0 left-0 h-full bg-zinc-900 border-r border-zinc-800 flex flex-col transition-all duration-300 md:static md:translate-x-0 ${show ? "translate-x-0" : "-translate-x-full"} ${collapsed ? "w-16" : "w-64"} md:block`}>
+      <div className="flex flex-col gap-6 px-6 pt-8 pb-4">
+        {!collapsed && <YakAILogo />}
+        {collapsed && (
+          <div className="flex justify-center">
+            <span className="inline-block w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center font-bold text-lg text-white select-none">བོད</span>
           </div>
+        )}
+      </div>
+      
+      {/* 收缩/展开按钮 */}
+      <div className={`flex px-2 mb-4 ${collapsed ? 'justify-center' : 'justify-end'}`}>
+        <button
+          onClick={onToggleCollapse}
+          className={`flex items-center px-3 py-2 rounded-lg bg-zinc-900 text-white/80 hover:bg-zinc-800 cursor-pointer select-none transition ${collapsed ? 'justify-center' : ''}`}
+          title={collapsed ? "展开侧边栏" : "收缩侧边栏"}
+        >
+          {collapsed ? <FiChevronRight size={20} /> : <FiChevronLeft size={20} />}
+        </button>
+      </div>
+      
+      <nav className="flex flex-col gap-1 px-4">
+        {MENU.map((item) => (
+          <button 
+            key={item.label} 
+            className={`flex items-center px-3 py-2 rounded-lg text-white/80 bg-zinc-900 hover:bg-zinc-800 cursor-pointer select-none transition ${collapsed ? 'justify-center' : 'gap-2'}`}
+            title={collapsed ? item.label : undefined}
+          >
+            <span>{item.icon}</span> 
+            {!collapsed && item.label}
+          </button>
         ))}
+      </nav>
+      
+      {!collapsed && (
+        <div className="flex-1 overflow-y-auto mt-6 px-4">
+          <div className="text-xs text-zinc-400 mb-2">历史会话</div>
+          <div className="flex flex-col gap-1">
+            {SESSIONS.map((s) => (
+              <div 
+                key={s.id} 
+                className="px-3 py-2 rounded-lg text-white/80 bg-zinc-900 hover:bg-zinc-800 cursor-pointer select-none transition"
+                title={s.name}
+              >
+                {s.name}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      <div className="absolute bottom-0 left-0 w-full px-4 pb-6 bg-zinc-900">
+        <button 
+          className={`flex items-center px-3 py-2 rounded-lg text-white/80 bg-zinc-900 hover:bg-zinc-800 cursor-pointer select-none transition ${collapsed ? 'justify-center' : 'gap-2'}`}
+          title={collapsed ? "设置" : undefined}
+        >
+          <span>⚙️</span> 
+          {!collapsed && "设置"}
+        </button>
+        <button 
+          className={`flex items-center px-3 py-2 rounded-lg text-white/80 bg-zinc-900 hover:bg-zinc-800 cursor-pointer select-none transition mt-2 ${collapsed ? 'justify-center' : 'gap-2'}`}
+          title={collapsed ? "退出" : undefined}
+        >
+          <span>🚪</span> 
+          {!collapsed && "退出"}
+        </button>
       </div>
     </aside>
   );
 }
 
-// 聊天主区域
-function ChatArea({ messages, messagesEndRef }: { messages: Message[]; messagesEndRef: React.RefObject<HTMLDivElement> }) {
-  return (
-    <div className="flex-1 overflow-y-auto px-2 py-4 md:px-8 md:py-8 bg-gray-100" style={{ marginTop: 56, marginLeft: 256 }}>
-      {messages.length === 0 && (
-        <div className="flex flex-col items-center justify-center h-[60vh] text-gray-400 select-none">
-          <span className="text-3xl mb-2">💬</span>
-          <span>开始新的对话吧~</span>
-        </div>
-      )}
-      {messages.map((msg, idx) => (
-        <div key={idx} className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-          <div className={`flex items-end gap-2 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
-            <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center text-white text-lg font-bold select-none">
-              {msg.role === "user" ? <span>U</span> : <span>🤖</span>}
-            </div>
-            <div className={`max-w-[90vw] sm:max-w-[80vw] md:max-w-[60vw] px-4 py-3 rounded-2xl text-base whitespace-pre-wrap break-words shadow border ${msg.role === "user" ? "bg-zinc-700 text-white/90 border-zinc-600" : "bg-zinc-600 text-white border-zinc-500"}`}>
-              <ReactMarkdown
-                components={{
-                  code({ inline, className, children, ...props }: any) {
-                    const match = /language-(\w+)/.exec(className || "");
-                    return !inline && match ? (
-                      <SyntaxHighlighter
-                        style={vscDarkPlus}
-                        language={match[1]}
-                        PreTag="div"
-                        {...props}
-                      >
-                        {String(children).replace(/\n$/, "")}
-                      </SyntaxHighlighter>
-                    ) : (
-                      <code className={className} {...props}>
-                        {children}
-                      </code>
-                    );
-                  },
-                }}
-              >
-                {msg.content}
-              </ReactMarkdown>
-              {msg.streaming && (
-                <span className="animate-pulse text-gray-400 ml-1">▍</span>
-              )}
-            </div>
-          </div>
-        </div>
-      ))}
-      <div ref={messagesEndRef} />
-    </div>
-  );
-}
+
 
 // 输入区表单结构（底部和欢迎页都统一）
 function ChatInput({
-  input, setInput, onSend, loading, textareaRef, handleKeyDown, placeholder = "Ask anything"
+  input, setInput, onSend, loading, textareaRef, handleKeyDown, placeholder = "Ask anything", sidebarCollapsed
 }: {
   input: string;
   setInput: (v: string) => void;
@@ -125,12 +128,15 @@ function ChatInput({
   textareaRef: React.RefObject<HTMLTextAreaElement>;
   handleKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   placeholder?: string;
+  sidebarCollapsed: boolean;
 }) {
   return (
     <form
       onSubmit={onSend}
       className="max-w-2xl mx-auto w-full flex items-center gap-2 px-4 relative"
-      style={{ boxShadow: 'none' }}
+      style={{ 
+        boxShadow: 'none'
+      }}
     >
       {/* 工具按钮内嵌左侧 */}
       <span className="absolute left-6 bottom-2 z-10">
@@ -173,6 +179,7 @@ export default function YakAIPage() {
   const [loading, setLoading] = useState(false);
   const [currentSession, setCurrentSession] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [firstInput, setFirstInput] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -270,46 +277,46 @@ export default function YakAIPage() {
 
   // 移动端侧边栏切换
   const toggleSidebar = () => setSidebarOpen((v) => !v);
+  
+  // 桌面端侧边栏收缩切换
+  const toggleSidebarCollapse = () => setSidebarCollapsed((v) => !v);
 
   return (
-    <div className="flex h-full w-full bg-zinc-900 overflow-hidden">
+    <div className="flex h-full w-full bg-zinc-900 overflow-hidden relative">
       {/* Sidebar */}
-      <aside className={`fixed z-30 top-0 left-0 h-full w-64 bg-zinc-900 border-r border-zinc-800 flex flex-col transition-transform duration-300 md:static md:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:block`}>
-        <div className="flex flex-col gap-6 px-6 pt-8 pb-4">
-          <YakAILogo />
-        </div>
-        <nav className="flex flex-col gap-1 px-4">
-          {MENU.map((item) => (
-            <button key={item.label} className="flex items-center gap-2 px-3 py-2 rounded-lg text-white/90 hover:bg-zinc-800 transition text-base font-medium">
-              <span>{item.icon}</span> {item.label}
-            </button>
-          ))}
-        </nav>
-        <div className="flex-1 overflow-y-auto mt-6 px-4">
-          <div className="text-xs text-zinc-400 mb-2">历史会话</div>
-          <div className="flex flex-col gap-1">
-            {SESSIONS.map((s) => (
-              <div key={s.id} className="px-3 py-2 rounded-lg text-white/80 hover:bg-zinc-800 cursor-pointer select-none transition">
-                {s.name}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="absolute bottom-0 left-0 w-full px-4 pb-6 bg-zinc-900">
-          <button className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-zinc-300 hover:bg-zinc-800 transition text-base">
-            <span>⚙️</span> 设置
-          </button>
-          <button className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-zinc-300 hover:bg-zinc-800 transition text-base mt-2">
-            <span>🚪</span> 退出
-          </button>
-        </div>
-      </aside>
+      <div className="hidden md:block h-full">
+        <Sidebar
+          onNewChat={() => {}}
+          currentId={currentSession}
+          onSelect={setCurrentSession}
+          show={true}
+          onClose={toggleSidebar}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={toggleSidebarCollapse}
+        />
+      </div>
+      {/* 移动端侧边栏 */}
+      <div className="md:hidden">
+        <Sidebar
+          onNewChat={() => {}}
+          currentId={currentSession}
+          onSelect={setCurrentSession}
+          show={sidebarOpen}
+          onClose={toggleSidebar}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={toggleSidebarCollapse}
+        />
+      </div>
+      
       {/* 移动端侧边栏按钮 */}
       <button className="fixed top-4 left-4 z-40 md:hidden bg-zinc-800 text-white p-2 rounded-full shadow-lg border border-zinc-700" onClick={toggleSidebar}>
         <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
       </button>
+      
       {/* Main Chat Area */}
-      <main className="flex-1 flex flex-col h-full bg-zinc-800 min-w-0 relative overflow-hidden">
+      <main 
+        className="flex-1 flex flex-col h-full bg-zinc-800 min-w-0 relative overflow-hidden"
+      >
         {/* 消息流或欢迎语 */}
         <div className="flex-1 flex flex-col w-full h-0 overflow-y-auto">
           {messages.length === 0 ? (
@@ -323,6 +330,7 @@ export default function YakAIPage() {
                 textareaRef={textareaRef}
                 handleKeyDown={handleKeyDown}
                 placeholder="Ask anything"
+                sidebarCollapsed={sidebarCollapsed}
               />
             </div>
           ) : (
@@ -335,7 +343,32 @@ export default function YakAIPage() {
                         {msg.role === "user" ? <span>U</span> : <span>🤖</span>}
                       </div>
                       <div className={`max-w-[90vw] sm:max-w-[80vw] md:max-w-[60vw] px-4 py-3 rounded-2xl text-base whitespace-pre-wrap break-words shadow border ${msg.role === "user" ? "bg-zinc-700 text-white/90 border-zinc-600" : "bg-zinc-600 text-white border-zinc-500"}`}>
-                        {msg.content}
+                        <ReactMarkdown
+                          components={{
+                            code({ inline, className, children, ...props }: any) {
+                              const match = /language-(\w+)/.exec(className || "");
+                              return !inline && match ? (
+                                <SyntaxHighlighter
+                                  style={vscDarkPlus}
+                                  language={match[1]}
+                                  PreTag="div"
+                                  {...props}
+                                >
+                                  {String(children).replace(/\n$/, "")}
+                                </SyntaxHighlighter>
+                              ) : (
+                                <code className={className} {...props}>
+                                  {children}
+                                </code>
+                              );
+                            },
+                          }}
+                        >
+                          {msg.content}
+                        </ReactMarkdown>
+                        {msg.streaming && (
+                          <span className="animate-pulse text-gray-400 ml-1">▍</span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -355,6 +388,7 @@ export default function YakAIPage() {
               loading={loading}
               textareaRef={textareaRef}
               handleKeyDown={handleKeyDown}
+              sidebarCollapsed={sidebarCollapsed}
             />
             <div className="w-full flex justify-center pb-4 pt-2">
               <span className="text-xs text-gray-400 select-none">YAK Ai can make mistakes. Check important info.</span>

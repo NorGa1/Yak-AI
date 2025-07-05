@@ -15,7 +15,7 @@ type Message = {
 function YakAILogo() {
   return (
     <div className="flex items-center gap-2">
-      <span className="inline-block w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center font-bold text-lg text-white select-none">བོད</span>
+      <span className="inline-block w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center font-bold text-lg text-white select-none font-tibetan">བོད</span>
       <span className="text-2xl font-extrabold tracking-widest text-white select-none">YAKAI</span>
     </div>
   );
@@ -320,7 +320,7 @@ export default function YakAIPage() {
         <div className="flex-1 flex flex-col w-full h-0 overflow-y-auto">
           {messages.length === 0 ? (
             <div className="flex flex-1 flex-col items-center justify-center w-full h-full">
-              <h1 className="font-tibetan text-5xl font-bold text-white mb-6 select-none">བཀྲ་ཤིས་བདེ་ལེགས།</h1>
+              <h1 className="font-tibetan text-5xl font-bold text-white mb-6 select-none">བཀྲ ་ ཤིས ་ བདེ ་ ལེགས །</h1>
 
               <ChatInput
                 input={input}

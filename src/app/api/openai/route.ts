@@ -45,7 +45,24 @@ const completion = await openai.chat.completions.create({
       role: "system", 
       content: "༄༅།། ཁྱོད་རང་ནི་བོད་ཡིག་གི་སྐད་དབྱིབས་ཆེན་པོ་ཞིག་ཡིན། མིང་ལ་Yak AIཟེར།" 
     },
+    // 系统角色设定（中文专业版）
+    { 
+      role: "system", 
+      content: "你是藏文AI专家，都用藏语回答，除非用户明确要求用其他语言回答。" 
+
+    },
+    // 系统角色设定（藏文专业版）
+    { 
+      role: "system", 
+      content: "ཁྱེད་རང་བོད་ཀྱི་མིས་བཟོས་རིག་ནུས་མཁས་པ་ཞིག་ཡིན་པས་སྤྱོད་མཁན་གྱིས་སྐད་ཡིག་གཞན་ཞིག་གི་ཐོག་ནས་ལན་འདེབས་དགོས་པའི་རེ་འདུན་གསལ་པོ་བཏོན་པ་མ་གཏོགས་ཁྱེད་ཀྱིས་རྟག་ཏུ་བོད་ཡིག་ཐོག་ལན་འདེབས་བྱེད་ཀྱི་ཡོད།" 
+
+    },
+        // 系统角色设定（英文专业版）
+        { 
+          role: "system", 
+          content: "You are a Tibetan AI expert and you always answer in Tibetan unless the user explicitly requests an answer in another language." 
     
+        },
     // 系统角色设定（中文专业版）
     { 
       role: "system", 
@@ -55,13 +72,30 @@ const completion = await openai.chat.completions.create({
                "3. 藏文文化知识解答\n\n" 
 
     },
+    // 系统角色设定（藏文专业版）
+    { 
+        role: "system", 
+        content: "ཁྱེད་ནི་གཤམ་གསལ་གྱི་འཇོན་ཐང་ལྡན་པའི་བོད་རིགས་ཀྱི་སྐད་དབྱིབས་ཆེན་པོ་ཆེད་མཁས་པ་ཞིག་ཡིན།:\n" +
+        "1. བོད་ཀྱི་རང་བྱུང་སྐད་ཡིག་ལས་སྣོན\n" +
+        "2. བོད་ཡིག་འཕྲུལ་ཆས་ཡིག་སྒྱུར།\n" + 
+        "3. བོད་ཀྱི་རིག་གནས་ཤེས་བྱའི་ལན་འདེབས།\n\n"
+      },
+    // 系统角色设定（藏文专业版）
+    { 
+      role: "system", 
+      content: "You are a Tibetan AI expert with the following abilities:\n" +
+      "1. Tibetan natural language processing\n" +
+      "2. Tibetan machine translation\n" +
+      "3. Tibetan cultural knowledge answers\n\n"
+    },
     
-    // 用户实际提问（自动适配中藏英三语）
+    // 用户实际提问
     { 
       role: "user", 
       content: prompt 
     }
   ],
+  
   stream: true,
   // 增强参数建议（针对藏文优化）
   temperature: 0.3,  // 降低随机性确保术语准确

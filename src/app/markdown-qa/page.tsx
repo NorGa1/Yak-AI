@@ -44,21 +44,12 @@ function Sidebar({ onNewChat, currentId, onSelect, show, onClose, collapsed, onT
   onToggleCollapse: () => void;
 }) {
   return (
-    <aside className={`fixed z-30 top-0 left-0 h-full bg-zinc-900 border-r border-zinc-800 flex flex-col transition-all duration-300 md:static md:translate-x-0 ${show ? "translate-x-0" : "-translate-x-full"} ${collapsed ? "w-16" : "w-64"} md:block`}>
-      <div className="flex flex-col gap-6 px-6 pt-8 pb-4">
-        {!collapsed && <YakAILogo />}
-        {collapsed && (
-          <div className="flex justify-center">
-            <span className="inline-block w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center font-bold text-lg text-white select-none">བོད</span>
-          </div>
-        )}
-      </div>
-      
-      {/* 收缩/展开按钮 */}
-      <div className={`flex px-2 mb-4 ${collapsed ? 'justify-center' : 'justify-end'}`}>
+    <aside className={`fixed z-30 top-0 left-0 h-full bg-zinc-900 border-r border-zinc-800 flex flex-col transition-all duration-100 md:static md:translate-x-0 ${show ? "translate-x-0" : "-translate-x-full"} ${collapsed ? "w-16" : "w-64"} md:block`}>
+      {/* 收缩/展开按钮 - 独立在顶部 */}
+      <div className={`px-4 py-4 ${collapsed ? 'flex justify-center' : ''}`}>
         <button
           onClick={onToggleCollapse}
-          className={`flex items-center px-3 py-2 rounded-lg bg-zinc-900 text-white/80 hover:bg-zinc-800 cursor-pointer select-none transition ${collapsed ? 'justify-center' : ''}`}
+          className={`flex items-center px-3 py-2 rounded-lg bg-zinc-900 text-white/80 hover:bg-zinc-800 cursor-pointer select-none transition ${collapsed ? 'justify-center' : 'justify-end'}`}
           title={collapsed ? "展开侧边栏" : "收缩侧边栏"}
         >
           {collapsed ? <FiChevronRight size={20} /> : <FiChevronLeft size={20} />}
@@ -95,21 +86,24 @@ function Sidebar({ onNewChat, currentId, onSelect, show, onClose, collapsed, onT
         </div>
       )}
       
+      {/* 设置和退出按钮 - 底部显示，与菜单按钮样式一致 */}
       <div className="absolute bottom-0 left-0 w-full px-4 pb-6 bg-zinc-900">
-        <button 
-          className={`flex items-center px-3 py-2 rounded-lg text-white/80 bg-zinc-900 hover:bg-zinc-800 cursor-pointer select-none transition ${collapsed ? 'justify-center' : 'gap-2'}`}
-          title={collapsed ? "设置" : undefined}
-        >
-          <span>⚙️</span> 
-          {!collapsed && "设置"}
-        </button>
-        <button 
-          className={`flex items-center px-3 py-2 rounded-lg text-white/80 bg-zinc-900 hover:bg-zinc-800 cursor-pointer select-none transition mt-2 ${collapsed ? 'justify-center' : 'gap-2'}`}
-          title={collapsed ? "退出" : undefined}
-        >
-          <span>🚪</span> 
-          {!collapsed && "退出"}
-        </button>
+        <div className="flex flex-col gap-1">
+          <button 
+            className={`flex items-center px-3 py-2 rounded-lg text-white/80 bg-zinc-900 hover:bg-zinc-800 cursor-pointer select-none transition ${collapsed ? 'justify-center' : 'gap-2'}`}
+            title={collapsed ? "设置" : undefined}
+          >
+            <span>⚙️</span> 
+            {!collapsed && "设置"}
+          </button>
+          <button 
+            className={`flex items-center px-3 py-2 rounded-lg text-white/80 bg-zinc-900 hover:bg-zinc-800 cursor-pointer select-none transition ${collapsed ? 'justify-center' : 'gap-2'}`}
+            title={collapsed ? "退出" : undefined}
+          >
+            <span>🚪</span> 
+            {!collapsed && "退出"}
+          </button>
+        </div>
       </div>
     </aside>
   );
@@ -309,7 +303,7 @@ export default function YakAIPage() {
       </div>
       
       {/* 移动端侧边栏按钮 */}
-      <button className="fixed top-4 left-4 z-40 md:hidden bg-zinc-800 text-white p-2 rounded-full shadow-lg border border-zinc-700" onClick={toggleSidebar}>
+      <button className="fixed top-4 left-20 z-40 md:hidden bg-zinc-800 text-white p-2 rounded-full shadow-lg border border-zinc-700" onClick={toggleSidebar}>
         <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
       </button>
       
@@ -317,6 +311,11 @@ export default function YakAIPage() {
       <main 
         className="flex-1 flex flex-col h-full bg-zinc-800 min-w-0 relative overflow-hidden"
       >
+        {/* YakAI Logo - 主聊天区域左上角 */}
+        <div className="absolute top-4 left-4 z-10">
+          <YakAILogo />
+        </div>
+        
         {/* 消息流或欢迎语 */}
         <div className="flex-1 flex flex-col w-full h-0 overflow-y-auto">
           {messages.length === 0 ? (

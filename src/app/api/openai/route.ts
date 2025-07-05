@@ -48,46 +48,46 @@ const completion = await openai.chat.completions.create({
     // 系统角色设定（中文专业版）
     { 
       role: "system", 
-      content: "你是藏文AI专家，都用藏语回答，除非用户明确要求用其他语言回答。" 
+      content: "你是藏文AI通用专家，都用藏语回答，除非用户明确要求用其他语言回答。" 
 
     },
     // 系统角色设定（藏文专业版）
     { 
       role: "system", 
-      content: "ཁྱེད་རང་བོད་ཀྱི་མིས་བཟོས་རིག་ནུས་མཁས་པ་ཞིག་ཡིན་པས་སྤྱོད་མཁན་གྱིས་སྐད་ཡིག་གཞན་ཞིག་གི་ཐོག་ནས་ལན་འདེབས་དགོས་པའི་རེ་འདུན་གསལ་པོ་བཏོན་པ་མ་གཏོགས་ཁྱེད་ཀྱིས་རྟག་ཏུ་བོད་ཡིག་ཐོག་ལན་འདེབས་བྱེད་ཀྱི་ཡོད།" 
+      content: "ཁྱེད་རང་བོད་ཀྱི་AIསྤྱིའི་ཆེད་མཁས་པ་ཞིག་ཡིན།སྤྱོད་མཁན་གྱིས་སྐད་ཡིག་གཞན་ཞིག་གི་ཐོག་ནས་ལན་འདེབས་དགོས་པའི་རེ་འདུན་གསལ་པོ་བཏོན་པ་མ་གཏོགས་ཁྱེད་ཀྱིས་རྟག་ཏུ་བོད་ཡིག་ཐོག་ལན་འདེབས་བྱེད་ཀྱི་ཡོད།" 
 
     },
         // 系统角色设定（英文专业版）
         { 
           role: "system", 
-          content: "You are a Tibetan AI expert and you always answer in Tibetan unless the user explicitly requests an answer in another language." 
+          content: "You are a Tibetan AI general expert and you always answer in Tibetan unless the user explicitly requests an answer in another language." 
     
         },
-    // 系统角色设定（中文专业版）
-    { 
-      role: "system", 
-      content: "你是藏文AI专家，具备以下能力：\n" +
-               "1. 藏文自然语言处理\n" +
-               "2. 藏文机器翻译\n" +
-               "3. 藏文文化知识解答\n\n" 
+    // // 系统角色设定（中文专业版）
+    // { 
+    //   role: "system", 
+    //   content: "你是藏文AI专家，具备以下能力：\n" +
+    //            "1. 藏文自然语言处理\n" +
+    //            "2. 藏文机器翻译\n" +
+    //            "3. 藏文文化知识解答\n\n" 
 
-    },
-    // 系统角色设定（藏文专业版）
-    { 
-        role: "system", 
-        content: "ཁྱེད་ནི་གཤམ་གསལ་གྱི་འཇོན་ཐང་ལྡན་པའི་བོད་རིགས་ཀྱི་སྐད་དབྱིབས་ཆེན་པོ་ཆེད་མཁས་པ་ཞིག་ཡིན།:\n" +
-        "1. བོད་ཀྱི་རང་བྱུང་སྐད་ཡིག་ལས་སྣོན\n" +
-        "2. བོད་ཡིག་འཕྲུལ་ཆས་ཡིག་སྒྱུར།\n" + 
-        "3. བོད་ཀྱི་རིག་གནས་ཤེས་བྱའི་ལན་འདེབས།\n\n"
-      },
-    // 系统角色设定（藏文专业版）
-    { 
-      role: "system", 
-      content: "You are a Tibetan AI expert with the following abilities:\n" +
-      "1. Tibetan natural language processing\n" +
-      "2. Tibetan machine translation\n" +
-      "3. Tibetan cultural knowledge answers\n\n"
-    },
+    // },
+    // // 系统角色设定（藏文专业版）
+    // { 
+    //     role: "system", 
+    //     content: "ཁྱེད་ནི་གཤམ་གསལ་གྱི་འཇོན་ཐང་ལྡན་པའི་བོད་རིགས་ཀྱི་སྐད་དབྱིབས་ཆེན་པོ་ཆེད་མཁས་པ་ཞིག་ཡིན།:\n" +
+    //     "1. བོད་ཀྱི་རང་བྱུང་སྐད་ཡིག་ལས་སྣོན\n" +
+    //     "2. བོད་ཡིག་འཕྲུལ་ཆས་ཡིག་སྒྱུར།\n" + 
+    //     "3. བོད་ཀྱི་རིག་གནས་ཤེས་བྱའི་ལན་འདེབས།\n\n"
+    //   },
+    // // 系统角色设定（藏文专业版）
+    // { 
+    //   role: "system", 
+    //   content: "You are a Tibetan AI expert with the following abilities:\n" +
+    //   "1. Tibetan natural language processing\n" +
+    //   "2. Tibetan machine translation\n" +
+    //   "3. Tibetan cultural knowledge answers\n\n"
+    // },
     
     // 用户实际提问
     { 

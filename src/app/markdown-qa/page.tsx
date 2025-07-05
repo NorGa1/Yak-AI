@@ -320,7 +320,8 @@ export default function YakAIPage() {
         <div className="flex-1 flex flex-col w-full h-0 overflow-y-auto">
           {messages.length === 0 ? (
             <div className="flex flex-1 flex-col items-center justify-center w-full h-full">
-              <h1 className="text-3xl font-bold text-white mb-6 select-none">What's on the agenda today?</h1>
+              <h1 className="font-tibetan text-5xl font-bold text-white mb-6 select-none">བཀྲ་ཤིས་བདེ་ལེགས།</h1>
+
               <ChatInput
                 input={input}
                 setInput={setInput}
@@ -341,7 +342,7 @@ export default function YakAIPage() {
                       <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center text-white text-lg font-bold select-none">
                         {msg.role === "user" ? <span>U</span> : <span>🤖</span>}
                       </div>
-                      <div className={`max-w-[90vw] sm:max-w-[80vw] md:max-w-[60vw] px-4 py-3 rounded-2xl text-base whitespace-pre-wrap break-words shadow border ${msg.role === "user" ? "bg-zinc-700 text-white/90 border-zinc-600" : "bg-zinc-600 text-white border-zinc-500"}`}>
+                      <div className={`max-w-[90vw] sm:max-w-[80vw] md:max-w-[60vw] px-4 py-3 rounded-2xl text-base whitespace-pre-wrap break-words shadow border ${msg.role === "user" ? "bg-zinc-700 text-white/90 border-zinc-600 font-tiebtanchat" : "bg-zinc-600 text-white border-zinc-500 font-tiebtanchat"}`}>
                         <ReactMarkdown
                           components={{
                             code({ inline, className, children, ...props }: any) {

@@ -40,3 +40,32 @@ pre {
 .markdown {
   @apply prose prose-invert;
 }
+
+/* 
+@font-face {
+  font-family: 'TibetanFont';
+  src: url('/font/Qomolangma-Tsuring.ttf') format('truetype');
+  font-display: swap;
+}
+
+.font-tibetan {
+  font-family: 'TibetanFont', sans-serif;
+} */
+
+
+@font-face {
+  font-family: 'TibetanFont';
+  src: url('/font/Himalaya-D.ttf') format('truetype');
+  /* font-display: swap; */
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'tiebechat';
+  src: url('/font/Qomolangma-UchenSarchen.ttf') format('truetype');  
+  /* // TibetanUnicode */
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}

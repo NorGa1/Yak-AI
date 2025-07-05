@@ -4,6 +4,12 @@ import ReactMarkdown from "react-markdown"; // 导入 react-markdown 库
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"; // 导入 react-syntax-highlighter 库
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism"; // 导入 vscDarkPlus 样式
 import { FiSend, FiMenu, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiZap, FiTarget, FiStar, FiCpu } from "react-icons/fi";
+import { AiOutlineRobot, AiOutlineBulb } from "react-icons/ai";
+import { BsLightning, BsBrain } from "react-icons/bs";
+import { FaBrain } from "react-icons/fa";
+import { AiOutlineUser } from "react-icons/ai";
+
 
 type Message = {
   role: "user" | "assistant";
@@ -340,7 +346,7 @@ export default function YakAIPage() {
                   <div key={idx} className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                     <div className={`flex items-end gap-2 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
                       <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center text-white text-lg font-bold select-none">
-                        {msg.role === "user" ? <span>U</span> : <span>🤖</span>}
+                      {msg.role === "user" ? <AiOutlineUser size={16} /> : <FaBrain size={16} />}
                       </div>
                       <div className={`max-w-[90vw] sm:max-w-[80vw] md:max-w-[60vw] px-4 py-3 rounded-2xl text-base whitespace-pre-wrap break-words shadow border ${msg.role === "user" ? "bg-zinc-700 text-white/90 border-zinc-600 font-tiebtanchat" : "bg-zinc-600 text-white border-zinc-500 font-tiebtanchat"}`}>
                         <ReactMarkdown

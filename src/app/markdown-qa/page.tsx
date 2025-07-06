@@ -28,15 +28,16 @@ function YakAILogo() {
 }
 
 const MENU = [
-  { label: "New chat", icon: "➕" },
-  { label: "Search chats", icon: "🔍" },
-  { label: "Library", icon: "📚" },
+  { label: "གླེང་མོལ་གསར་བ།", icon: "➕" },
+  { label: "གླེང་མོལ་འཚོལ་ཞིབ།", icon: "🔍"},
+  { label: "དཔེ་མཛོད་ཁང་།", icon: "📚" },
 ];
 
+
 const SESSIONS = [
-  { id: 1, name: "会话一" },
-  { id: 2, name: "会话二" },
-  { id: 3, name: "会话三" },
+  { id: 1, name: "གླེང་མོལ་ ༡ " },  
+  { id: 2, name: "གླེང་མོལ་ ༢ " },
+  { id: 3, name: "གླེང་མོལ་ ༣ " },
 ];
 
 // 侧边栏组件
@@ -66,7 +67,7 @@ function Sidebar({ onNewChat, currentId, onSelect, show, onClose, collapsed, onT
         {MENU.map((item) => (
           <button 
             key={item.label} 
-            className={`flex items-center px-3 py-2 rounded-lg text-white/80 bg-zinc-900 hover:bg-zinc-800 cursor-pointer select-none transition ${collapsed ? 'justify-center' : 'gap-2'}`}
+            className={`font-tiebtanchat flex items-center px-3 py-2 rounded-lg text-white/80 bg-zinc-900 hover:bg-zinc-800 cursor-pointer select-none transition ${collapsed ? 'justify-center' : 'gap-2'}`}
             title={collapsed ? item.label : undefined}
           >
             <span>{item.icon}</span> 
@@ -77,7 +78,7 @@ function Sidebar({ onNewChat, currentId, onSelect, show, onClose, collapsed, onT
       
       {!collapsed && (
         <div className="flex-1 overflow-y-auto mt-6 px-4">
-          <div className="text-xs text-zinc-400 mb-2">历史会话</div>
+          <div className="text-xs text-zinc-400 mb-2 font-tiebtanchat text-lg">ལོ་རྒྱུས་གླེང་མོལ།</div>
           <div className="flex flex-col gap-1">
             {SESSIONS.map((s) => (
               <div 
@@ -96,18 +97,18 @@ function Sidebar({ onNewChat, currentId, onSelect, show, onClose, collapsed, onT
       <div className="absolute bottom-0 left-0 w-full px-4 pb-6 bg-zinc-900">
         <div className="flex flex-col gap-1">
           <button 
-            className={`flex items-center px-3 py-2 rounded-lg text-white/80 bg-zinc-900 hover:bg-zinc-800 cursor-pointer select-none transition ${collapsed ? 'justify-center' : 'gap-2'}`}
-            title={collapsed ? "设置" : undefined}
+            className={`font-tiebtanchat flex items-center px-3 py-2 rounded-lg text-white/80 bg-zinc-900 hover:bg-zinc-800 cursor-pointer select-none transition ${collapsed ? 'justify-center' : 'gap-2'}`}
+            title={collapsed ? "སྒྲིག་འགོད།" : undefined}
           >
             <span>⚙️</span> 
-            {!collapsed && "设置"}
+            {!collapsed && "སྒྲིག་འགོད།"}
           </button>
           <button 
-            className={`flex items-center px-3 py-2 rounded-lg text-white/80 bg-zinc-900 hover:bg-zinc-800 cursor-pointer select-none transition ${collapsed ? 'justify-center' : 'gap-2'}`}
-            title={collapsed ? "退出" : undefined}
+            className={`font-tiebtanchat flex items-center px-3 py-2 rounded-lg text-white/80 bg-zinc-900 hover:bg-zinc-800 cursor-pointer select-none transition ${collapsed ? 'justify-center' : 'gap-2'}`}
+            title={collapsed ? "ཐོ་ཞུགས།" : undefined}
           >
             <span>🚪</span> 
-            {!collapsed && "退出"}
+            {!collapsed && "ཐོ་ཞུགས།"}
           </button>
         </div>
       </div>
@@ -119,7 +120,7 @@ function Sidebar({ onNewChat, currentId, onSelect, show, onClose, collapsed, onT
 
 // 输入区表单结构（底部和欢迎页都统一）
 function ChatInput({
-  input, setInput, onSend, loading, textareaRef, handleKeyDown, placeholder = "Ask anything", sidebarCollapsed
+  input, setInput, onSend, loading, textareaRef, handleKeyDown, placeholder = "འཚོལ་བྱའི་ནང་དོན་གང་རུང་དྲི་བ།", sidebarCollapsed
 }: {
   input: string;
   setInput: (v: string) => void;
@@ -335,7 +336,7 @@ export default function YakAIPage() {
                 loading={loading}
                 textareaRef={textareaRef}
                 handleKeyDown={handleKeyDown}
-                placeholder="Ask anything"
+                placeholder="འཚོལ་བྱའི་ནང་དོན་གང་རུང་དྲི་བ།"
                 sidebarCollapsed={sidebarCollapsed}
               />
             </div>

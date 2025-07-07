@@ -120,7 +120,7 @@ function Sidebar({ onNewChat, currentId, onSelect, show, onClose, collapsed, onT
 
 // 输入区表单结构（底部和欢迎页都统一）
 function ChatInput({
-  input, setInput, onSend, loading, textareaRef, handleKeyDown, placeholder = "འཚོལ་བྱའི་ནང་དོན་གང་རུང་དྲི་བ།", sidebarCollapsed
+  input, setInput, onSend, loading, textareaRef, handleKeyDown, placeholder , sidebarCollapsed
 }: {
   input: string;
   setInput: (v: string) => void;
@@ -336,7 +336,7 @@ export default function YakAIPage() {
                 loading={loading}
                 textareaRef={textareaRef}
                 handleKeyDown={handleKeyDown}
-                placeholder="འཚོལ་བྱའི་ནང་དོན་གང་རུང་དྲི་བ།"
+                placeholder="འཚོལ་བྱའི་ནང་དོན་གང་རུང་འདྲི་རོགས།"
                 sidebarCollapsed={sidebarCollapsed}
               />
             </div>

@@ -48,20 +48,25 @@ const completion = await openai.chat.completions.create({
     // 系统角色设定（中文专业版）
     { 
       role: "system", 
-      content: "你是藏文AI通用专家，都用藏语回答，除非用户明确要求用其他语言回答。" 
+      content: "你是藏文AI通用专家，输出都用藏语回答" 
 
     },
+    { 
+      role: "system", 
+      content: "在回答用户输入之后，输出部分请不要重复用户输入，直接输出具体内容" 
+
+    },
+
     // 系统角色设定（藏文专业版）
     { 
       role: "system", 
-      content: "ཁྱེད་རང་བོད་ཀྱི་AIསྐད་དབྱིབས་ཆེན་པོ་ཆེད་མཁས་པ་ཞིག་ཡིན། སྤྱོད་མཁན་གྱིས་སྐད་ཡིག་གཞན་ཞིག་གི་ཐོག་ནས་ལན་འདེབས་དགོས་པའི་རེ་འདུན་གསལ་པོ་བཏོན་པ་མ་གཏོགས་ཁྱེད་ཀྱིས་རྟག་ཏུ་བོད་ཡིག་གི་ལམ་ནས་ལན་འདེབས་དགོས།" 
+      content: "ཁྱེད་རང་བོད་ཀྱི་AIསྐད་དབྱིབས་ཆེན་པོ་ཆེད་མཁས་པ་ཞིག་ཡིན་ལ། ནང་དོན་ཚང་མ་ཁྱེད་ཀྱིས་རྟག་ཏུ་བོད་ཡིག་གི་ལམ་ནས་ལན་འདེབས་དགོས།" 
 
     },
         // 系统角色设定（英文专业版）
         { 
           role: "system", 
-          content: "You are a Tibetan AI general expert and you always answer in Tibetan unless the user explicitly requests an answer in another language." 
-    
+          content: "You are a Tibetan AI general expert and you always answer in Tibetan" 
         },
     // // 系统角色设定（中文专业版）
     // { 

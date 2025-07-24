@@ -40,16 +40,6 @@ llm-ui-openai-nextjs-example/
 
 ---
 
-### 环境变量
-
-请在项目根目录下新建 `.env` 文件，并配置你的 DeepSeek API 密钥：
-
-```
-DEEPSEEK_API_KEY=你的真实API密钥
-```
-
----
-
 ### 后端 API 实现（流式 SSE）
 
 `src/app/api/openai/route.ts`  

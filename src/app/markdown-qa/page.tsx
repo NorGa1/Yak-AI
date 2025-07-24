@@ -120,11 +120,14 @@ function Sidebar({ onNewChat, currentId, onSelect, show, onClose, collapsed, onT
 
 // 输入区表单结构（底部和欢迎页都统一）
 function ChatInput({
-  input, setInput, onSend, loading, textareaRef, handleKeyDown, placeholder , sidebarCollapsed
+  input, setInput, onSend, onTranslate, loading, textareaRef, handleKeyDown, placeholder , sidebarCollapsed
 }: {
   input: string;
   setInput: (v: string) => void;
+
   onSend: (e: React.FormEvent) => void;
+  onTranslate: (e: React.FormEvent) => void;
+
   loading: boolean;
   textareaRef: React.RefObject<HTMLTextAreaElement>;
   handleKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
@@ -141,7 +144,11 @@ function ChatInput({
     >
       {/* 工具按钮内嵌左侧 */}
       <span className="absolute left-6 bottom-2 z-10">
-        <button type="button" className="p-1 rounded bg-zinc-700 text-white/70 hover:bg-zinc-600 transition text-sm" title="Tools" style={{width:28, height:28}}>
+        <button type="button" className="p-1 rounded bg-zinc-700 text-white/70 hover:bg-zinc-600 transition text-sm" title="Tools" style={{width:28, height:28}}
+        disabled={loading || !input.trim()}
+        title="翻译"
+        onClick={onTranslate}
+        >
           <span role="img" aria-label="tools">🛠️</span>
         </button>
       </span>
@@ -201,6 +208,7 @@ export default function YakAIPage() {
   // 发送消息
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
+    //console.log("handleSend 被调用");
     if (!input.trim()) return;
     setFirstInput(false);
     setMessages((msgs) => [
@@ -210,11 +218,13 @@ export default function YakAIPage() {
     ]);
     setInput("");
     setLoading(true);
-    const response = await fetch("/api/openai", {
+
+    const response = await fetch("http://localhost:3001/api/chat/stream", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt: input }),
     });
+
     if (!response.body) {
       setMessages((msgs) => [
         ...msgs.slice(0, -1),
@@ -223,29 +233,51 @@ export default function YakAIPage() {
       setLoading(false);
       return;
     }
+
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let buffer = "";
+    let currentEvent = "";
+    let currentData = "";
+
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
       buffer += decoder.decode(value, { stream: true });
       const events = buffer.split("\n\n");
       buffer = events.pop() || "";
-      for (const event of events) {
-        if (event.startsWith("event: token")) {
-          const data = event.split("data: ")[1] || "";
+
+      for (const eventBlock of events) {
+        // 按行解析
+        const lines = eventBlock.split("\n");
+        let eventType = "";
+        let eventData = "";
+        for (const line of lines) {
+          if (line.startsWith("event:")) {
+            eventType = line.replace("event:", "").trim();
+          } else if (line.startsWith("data:")) {
+            // 只取第一行 data: 后的内容
+            if (eventData === "") {
+              eventData = line.replace("data:", "").trim();
+            } else {
+              // 多行 data:，可拼接
+              eventData += "\n" + line.replace("data:", "").trim();
+            }
+          }
+        }
+        // 处理事件
+        if (eventType === "token") {
           setMessages((msgs) => {
             const last = msgs[msgs.length - 1];
             if (last && last.role === "assistant" && last.streaming) {
               return [
                 ...msgs.slice(0, -1),
-                { ...last, content: last.content + data.replace(/<NEWLINE>|\$NEWLINE\$/g, "\n") },
+                { ...last, content: last.content + eventData },
               ];
             }
             return msgs;
           });
-        } else if (event.startsWith("event: finished")) {
+        } else if (eventType === "finished") {
           setMessages((msgs) => {
             const last = msgs[msgs.length - 1];
             if (last && last.role === "assistant" && last.streaming) {
@@ -257,17 +289,106 @@ export default function YakAIPage() {
             return msgs;
           });
           setLoading(false);
-        } else if (event.startsWith("event: error")) {
+        } else if (eventType === "error") {
           setMessages((msgs) => [
             ...msgs.slice(0, -1),
-            { role: "assistant", content: "服务不可用sbs" },
+            { role: "assistant", content: "服务不可用" },
           ]);
           setLoading(false);
         }
       }
     }
   };
-
+  
+  const handleTranslate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+    setFirstInput(false);
+    setMessages((msgs) => [
+      ...msgs,
+      { role: "user", content: input },
+      { role: "assistant", content: "", streaming: true }
+    ]);
+    setInput("");
+    setLoading(true);
+  
+    // 这里用流式翻译接口
+    const response = await fetch("http://localhost:3001/api/translate/stream", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text: input,
+        src_lang: srcLang,   // 你可以用 useState 管理 srcLang/tgtLang
+        tgt_lang: tgtLang
+      }),
+    });
+  
+    if (!response.body) {
+      setMessages((msgs) => [
+        ...msgs.slice(0, -1),
+        { role: "assistant", content: "服务不可用" },
+      ]);
+      setLoading(false);
+      return;
+    }
+  
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const events = buffer.split("\n\n");
+      buffer = events.pop() || "";
+      for (const event of events) {
+        const lines = event.split("\n");
+        let eventType = "";
+        let eventData = "";
+        for (const line of lines) {
+          if (line.startsWith("event:")) {
+            eventType = line.replace("event:", "").trim();
+          } else if (line.startsWith("data:")) {
+            if (eventData === "") {
+              eventData = line.replace("data:", "").trim();
+            } else {
+              eventData += "\n" + line.replace("data:", "").trim();
+            }
+          }
+        }
+        if (eventType === "token") {
+          setMessages((msgs) => {
+            const last = msgs[msgs.length - 1];
+            if (last && last.role === "assistant" && last.streaming) {
+              return [
+                ...msgs.slice(0, -1),
+                { ...last, content: last.content + eventData },
+              ];
+            }
+            return msgs;
+          });
+        } else if (eventType === "finished") {
+          setMessages((msgs) => {
+            const last = msgs[msgs.length - 1];
+            if (last && last.role === "assistant" && last.streaming) {
+              return [
+                ...msgs.slice(0, -1),
+                { ...last, streaming: false },
+              ];
+            }
+            return msgs;
+          });
+          setLoading(false);
+        } else if (eventType === "error") {
+          setMessages((msgs) => [
+            ...msgs.slice(0, -1),
+            { role: "assistant", content: "服务不可用" },
+          ]);
+          setLoading(false);
+        }
+      }
+    }
+  };
   // 回车发送，Shift+Enter 换行
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -281,6 +402,23 @@ export default function YakAIPage() {
   
   // 桌面端侧边栏收缩切换
   const toggleSidebarCollapse = () => setSidebarCollapsed((v) => !v);
+
+  const LANGS = [
+    { code: "zho_Hans", name: "中文（简体）" },
+    { code: "zho_Hant", name: "中文（繁体）" },
+    { code: "eng_Latn", name: "英语" },
+    { code: "bod_Tibt", name: "藏语" },
+    { code: "jpn_Jpan", name: "日语" },
+    { code: "kor_Hang", name: "韩语" },
+    { code: "rus_Cyrl", name: "俄语" },
+    { code: "fra_Latn", name: "法语" },
+    { code: "deu_Latn", name: "德语" },
+    { code: "spa_Latn", name: "西班牙语" },
+    // ...可根据需要扩展更多
+  ];
+
+  const [srcLang, setSrcLang] = useState("zho_Hans");
+  const [tgtLang, setTgtLang] = useState("bod_Tibt");
 
   return (
     <div className="flex h-full w-full bg-zinc-900 overflow-hidden relative">
@@ -329,10 +467,48 @@ export default function YakAIPage() {
             <div className="flex flex-1 flex-col items-center justify-center w-full h-full">
               <h1 className="font-tibetan text-5xl font-bold text-white mb-6 select-none">བཀྲ ་ ཤིས ་ བདེ ་ ལེགས །</h1>
 
+
+              {/* 语言选择区 */}
+              <div className="w-full max-w-2xl mx-auto flex flex-row gap-4 items-center justify-center py-2">
+                <select
+                  className="bg-zinc-700 text-white rounded px-2 py-1"
+                  value={srcLang}
+                  onChange={e => setSrcLang(e.target.value)}
+                  disabled={loading}
+                >
+                  {LANGS.map(lang => (
+                    <option key={lang.code} value={lang.code}>{lang.name}</option>
+                  ))}
+                </select>
+                <span className="text-white">→</span>
+                <select
+                  className="bg-zinc-700 text-white rounded px-2 py-1"
+                  value={tgtLang}
+                  onChange={e => setTgtLang(e.target.value)}
+                  disabled={loading}
+                >
+                  {LANGS.map(lang => (
+                    <option key={lang.code} value={lang.code}>{lang.name}</option>
+                  ))}
+                </select>
+                <button
+                  className="ml-4 px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-500 transition disabled:opacity-50"
+                  onClick={e => {
+                    e.preventDefault();
+                    handleTranslate(e);
+                  }}
+                  disabled={loading || !input.trim()}
+                  title="流式翻译"
+                >
+                  翻译
+                </button>
+              </div>
+
               <ChatInput
                 input={input}
                 setInput={setInput}
                 onSend={handleSend}
+                onTranslate={handleTranslate}
                 loading={loading}
                 textareaRef={textareaRef}
                 handleKeyDown={handleKeyDown}

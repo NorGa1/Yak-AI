@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+langchain
+openai
+pydantic
+langchain-community
+# 其他如 OCR/翻译模型依赖

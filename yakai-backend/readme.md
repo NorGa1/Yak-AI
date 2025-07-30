@@ -265,3 +265,9 @@ curl -X 'POST' \
   "src_lang": "zho_Hans",
   "tgt_lang": "eng_Latn"
 }'
+
+{
+  "text": "ཞིང་ལས་སྤྱི་ཚོགས་ཅན་གྱི་ཞབས་ཞུ་ལ་ཕྱོགས་གང་དག་གཙོ།",
+  "src_lang": "bod_Tibt",
+  "tgt_lang": "zho_Hans"
+}
